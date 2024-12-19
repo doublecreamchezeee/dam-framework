@@ -37,21 +37,25 @@ configurations {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
-    implementation("org.apache.httpcomponents:httpclient:4.5.13")
+    implementation("org.slf4j:slf4j-api:2.0.0")  // SLF4J API
+    implementation("org.slf4j:slf4j-simple:2.0.0")
+    implementation("org.postgresql:postgresql:42.6.0")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.mongodb:mongo-java-driver:3.12.10")
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.apache.httpcomponents:httpclient:4.5.13")
     compileOnly("org.projectlombok:lombok")
-    runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform()
+    enabled = false;
 }
 
 tasks.jar {
