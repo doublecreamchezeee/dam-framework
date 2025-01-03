@@ -2,6 +2,8 @@ package com.example.damfw.core.query.builder;
 
 import com.example.damfw.core.query.QueryType;
 
+import com.example.damfw.core.query.builder.wrapIdentifer.IdentifierWrapperStrategy;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,12 +14,26 @@ public abstract class QueryBuilder {
     protected List<String> wheres = new ArrayList<>();
 
     // Wrap table and column names to avoid reserved keyword conflicts
-    protected static String wrapIdentifier(String identifier) {
-        if (identifier == null || identifier.isEmpty()) {
-            return "";
-        }
-        return "\"" + identifier + "\""; // Use double quotes for PostgreSQL
+    private static IdentifierWrapperStrategy identifierWrapperStrategy;
+
+    // Set the strategy based on database type
+    public static void setIdentifierWrapperStrategy(IdentifierWrapperStrategy strategy) {
+        identifierWrapperStrategy = strategy;
     }
+
+    // Wrap identifiers using the current strategy
+    protected static String wrapIdentifier(String identifier) {
+        if (identifierWrapperStrategy == null) {
+            throw new IllegalStateException("IdentifierWrapperStrategy not set.");
+        }
+        return identifierWrapperStrategy.wrap(identifier);
+    }
+    // protected static String wrapIdentifier(String identifier) {
+    // if (identifier == null || identifier.isEmpty()) {
+    // return "";
+    // }
+    // return "\"" + identifier + "\""; // Use double quotes for PostgreSQL
+    // }
 
     public QueryBuilder where(String clause) {
         wheres.add(clause);

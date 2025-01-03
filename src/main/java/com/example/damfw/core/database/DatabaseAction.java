@@ -20,6 +20,8 @@ public class DatabaseAction {
 
     public Object executeQuery(String query) {
         try {
+            System.out.println("Execute query: " + query);
+
             Statement statement = connection.createStatement();
             return statement.executeQuery(query);
         } catch (SQLException e) {
@@ -28,6 +30,8 @@ public class DatabaseAction {
     }
 
     public void executeUpdate(String query) {
+        System.out.println("Executing update: " + query);
+
         try {
             Statement statement = connection.createStatement();
             statement.executeUpdate(query);

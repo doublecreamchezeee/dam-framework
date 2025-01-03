@@ -64,23 +64,28 @@ public class RecordMapper {
             for (Field field : fields) {
                 field.setAccessible(true);
             }
+
             Map<Object, Object> values = new HashMap<>();
+
             for (Field field : fields) {
                 field.setAccessible(true);
+
                 if (field.isAnnotationPresent(Id.class)) {
                     Id column = field.getAnnotation(Id.class);
                     Object idValue = field.get(object);
-                    if (idValue != null && field.getType().isAssignableFrom(String.class)) {
-                        idValue = "'" + idValue + "'";
-                    }
+                    // if (idValue != null && field.getType().isAssignableFrom(String.class)) {
+                    //     idValue = "" + idValue + "";
+                    // }
                     values.put(column.name(), idValue);
                 }
+
                 if (field.isAnnotationPresent(Column.class)) {
                     Column column = field.getAnnotation(Column.class);
                     Object columnValue = field.get(object);
-                    if (columnValue != null && field.getType().isAssignableFrom(String.class)) {
-                        columnValue = "'" + columnValue + "'";
-                    }
+                    // Removed single quotes to avoid SQL injection
+                    // if (columnValue != null && field.getType().isAssignableFrom(String.class)) {
+                    //     columnValue = "" + columnValue + "";
+                    // }
                     values.put(column.name(), columnValue);
                 }
             }
@@ -135,25 +140,32 @@ public class RecordMapper {
     public static <T> QueryBuilder toDeleteQuery(T object) {
         try {
             Class<?> clazz = object.getClass();
+
             if (!clazz.isAnnotationPresent(Table.class)) {
                 throw new RuntimeException("No valid record.");
             }
+
             Field[] fields = clazz.getDeclaredFields();
             Field idField = null;
+
             for (Field field : fields) {
                 field.setAccessible(true);
                 if (field.isAnnotationPresent(Id.class)) {
                     idField = field;
                 }
             }
+
             if (idField == null) {
                 throw new RuntimeException("No ID column. Please assign an id corresponding column!");
             }
+
             String tableName = clazz.getAnnotation(Table.class).table();
             Object idValue = idField.get(object);
+
             if (idField.getType().isAssignableFrom(String.class)) {
                 idValue = "'" + idValue + "'";
             }
+
             return QueryBuilder.delete(tableName)
                     .where(idField.getAnnotation(Id.class).name() + " = " + idValue);
         } catch (IllegalAccessException e) {

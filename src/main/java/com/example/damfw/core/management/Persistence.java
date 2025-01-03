@@ -5,6 +5,9 @@ import com.example.damfw.core.connection.ConnectionAbstractFactory;
 import com.example.damfw.core.database.DatabaseAction;
 import com.example.damfw.core.database.DatabaseConnectorStrategy;
 import com.example.damfw.exception.OutOfConnectionException;
+import com.example.damfw.core.query.builder.QueryBuilder;
+import com.example.damfw.core.query.builder.wrapIdentifer.MySQLIdentifierWrapper;
+import com.example.damfw.core.query.builder.wrapIdentifer.PostgreSQLIdentifierWrapper;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -21,7 +24,17 @@ public class Persistence {
     }
 
     public static void configureDatasource(ConnectionConfig configuration, ConnectionAbstractFactory connection, DatabaseConnectorStrategy connector) throws Exception {
+        setIdentifierWrapper(configuration.getType());
         createConnection(configuration, connection, connector);
+    }
+
+    private static void setIdentifierWrapper(String dbType) {
+        System.out.println("Setting identifier wrapper for " + dbType);
+        switch (dbType.toLowerCase()) {
+            case "mysql" -> QueryBuilder.setIdentifierWrapperStrategy(new MySQLIdentifierWrapper());
+            case "postgresql" -> QueryBuilder.setIdentifierWrapperStrategy(new PostgreSQLIdentifierWrapper());
+            default -> throw new UnsupportedOperationException("Unsupported database type: " + dbType);
+        }
     }
 
     public static void createConnection(ConnectionConfig configuration, ConnectionAbstractFactory connection, DatabaseConnectorStrategy connector) throws Exception {
