@@ -2,6 +2,7 @@ package com.example.damfw;
 
 import com.example.damfw.core.connection.ConnectionConfig;
 import com.example.damfw.core.connection.SqlConnectionFactory;
+import com.example.damfw.core.database.MySQLDatabaseConnector;
 import com.example.damfw.core.database.PostgresSQLDatabaseConnector;
 import com.example.damfw.core.management.DatabaseManager;
 import com.example.damfw.core.management.DatabaseManagerAbstractFactory;
@@ -43,8 +44,14 @@ public class DamFwApplication {
         // .params(params)
         // .build();
         try {
+            // MySQL
             Persistence.configureDatasource(configuration, new SqlConnectionFactory(),
-                    new PostgresSQLDatabaseConnector());
+                    new MySQLDatabaseConnector());
+
+            // PostgresSQL
+            // Persistence.configureDatasource(configuration, new SqlConnectionFactory(),
+            //         new PostgresSQLDatabaseConnector());
+
             System.out.println("Connected to database");
         } catch (ConnectionException e) {
             System.out.println(e.getMessage());
@@ -56,10 +63,10 @@ public class DamFwApplication {
         DatabaseManager databaseManager = factory.createRecordManager();
 
         // INSERT INTO user (id, name) VALUES (1, 'ATuan')
-        QueryBuilder insertQuery = QueryBuilder.insert("user")
-        .value("id", 2)
-        .value("name", "ATuan2");
-        databaseManager.executeUpdate(insertQuery);
+        // QueryBuilder insertQuery = QueryBuilder.insert("user")
+        //         .value("id", 2)
+        //         .value("name", "ATuan2");
+        // databaseManager.executeUpdate(insertQuery);
 
         // INSERT FROM OBJECT
         // User user = new User(4, "Telu");
@@ -86,10 +93,10 @@ public class DamFwApplication {
         // users.forEach(u -> System.out.println(u.getId() + " " + u.getName()));
 
         // SELECT * FROM user
-        // QueryBuilder selectQuery2 = QueryBuilder.select()
-        //         .from("user");
-        // List<User> users = databaseManager.executeQuery(selectQuery2, User.class);
-        // users.forEach(u -> System.out.println(u.getId() + " " + u.getName()));
+        QueryBuilder selectQuery2 = QueryBuilder.select()
+        .from("user");
+        List<User> users = databaseManager.executeQuery(selectQuery2, User.class);
+        users.forEach(u -> System.out.println(u.getId() + " " + u.getName()));
 
         // DELETE FROM user WHERE id = 1
         // QueryBuilder deleteQuery = QueryBuilder.delete("user")
