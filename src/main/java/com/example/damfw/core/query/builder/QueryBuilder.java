@@ -3,6 +3,7 @@ package com.example.damfw.core.query.builder;
 import com.example.damfw.core.query.QueryType;
 
 import com.example.damfw.core.query.builder.wrapIdentifer.IdentifierWrapperStrategy;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +14,10 @@ public abstract class QueryBuilder {
 
     protected List<String> wheres = new ArrayList<>();
 
-    // Wrap table and column names to avoid reserved keyword conflicts
-    private static IdentifierWrapperStrategy identifierWrapperStrategy;
-
     // Set the strategy based on database type
-    public static void setIdentifierWrapperStrategy(IdentifierWrapperStrategy strategy) {
-        identifierWrapperStrategy = strategy;
-    }
+    // Wrap table and column names to avoid reserved keyword conflicts
+    @Setter
+    private static IdentifierWrapperStrategy identifierWrapperStrategy;
 
     // Wrap identifiers using the current strategy
     protected static String wrapIdentifier(String identifier) {

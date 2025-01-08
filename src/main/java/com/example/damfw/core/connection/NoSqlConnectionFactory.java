@@ -6,15 +6,10 @@ public class NoSqlConnectionFactory extends ConnectionAbstractFactory {
 
     @Override
     public String createConnectionString(ConnectionConfig config) {
-        StringBuilder connectionUrl = new StringBuilder("mongodb://");
-
-        if (config.getUsername() != null && config.getPassword() != null) {
-            connectionUrl.append(config.getUsername()).append(":").append(config.getPassword()).append("@");
-        }
-
-        connectionUrl.append(config.getHostname())
-                .append("/")
-                .append(config.getDatabase());
+        StringBuilder connectionUrl = new StringBuilder("jdbc:")
+                .append(config.getType())
+                .append("://")
+                .append(config.getHostname());
 
         if (config.getParams() != null && !config.getParams().isEmpty()) {
             String queryParams = config.getParams().entrySet().stream()
@@ -22,7 +17,6 @@ public class NoSqlConnectionFactory extends ConnectionAbstractFactory {
                     .collect(Collectors.joining("&"));
             connectionUrl.append("?").append(queryParams);
         }
-
         return connectionUrl.toString();
     }
 }

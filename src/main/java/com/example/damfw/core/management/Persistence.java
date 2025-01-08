@@ -4,6 +4,7 @@ import com.example.damfw.core.connection.ConnectionConfig;
 import com.example.damfw.core.connection.ConnectionAbstractFactory;
 import com.example.damfw.core.database.DatabaseAction;
 import com.example.damfw.core.database.DatabaseConnectorStrategy;
+import com.example.damfw.core.query.builder.wrapIdentifer.DefaultIdentifierWrapper;
 import com.example.damfw.exception.OutOfConnectionException;
 import com.example.damfw.core.query.builder.QueryBuilder;
 import com.example.damfw.core.query.builder.wrapIdentifer.MySQLIdentifierWrapper;
@@ -33,6 +34,7 @@ public class Persistence {
         switch (dbType.toLowerCase()) {
             case "mysql" -> QueryBuilder.setIdentifierWrapperStrategy(new MySQLIdentifierWrapper());
             case "postgresql" -> QueryBuilder.setIdentifierWrapperStrategy(new PostgreSQLIdentifierWrapper());
+            case "neo4j" -> QueryBuilder.setIdentifierWrapperStrategy(new DefaultIdentifierWrapper());
             default -> throw new UnsupportedOperationException("Unsupported database type: " + dbType);
         }
     }

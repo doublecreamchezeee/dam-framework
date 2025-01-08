@@ -45,6 +45,11 @@ public class DatabaseManager {
         return RecordMapper.map(resultSet, clazz);
     }
 
+    public ResultSet executeQuery(QueryBuilder query)
+            throws SQLException, InstantiationException, IllegalAccessException, UnsupportedActionException, InvocationTargetException, NoSuchMethodException {
+        return (ResultSet) databaseAction.executeQuery(query.build());
+    }
+
     public void executeUpdate(QueryBuilder query) {
         databaseAction.executeUpdate(query.build());
     }
