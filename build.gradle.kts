@@ -41,8 +41,6 @@ repositories {
 }
 
 dependencies {
-    implementation("org.slf4j:slf4j-api:2.0.0")  // SLF4J API
-    implementation("org.slf4j:slf4j-simple:2.0.0")
     implementation("org.postgresql:postgresql:42.6.0") // PostgreSQL driver
     implementation("mysql:mysql-connector-java:8.0.33") // MySQL driver
     runtimeOnly("org.neo4j:neo4j-jdbc-full-bundle:6.1.0")
