@@ -1,8 +1,8 @@
 package com.example.damfw.core.database;
 
-import com.example.damfw.core.connection.ConnectionConfig;
-import com.example.damfw.core.connection.ConnectionAbstractFactory;
+import com.example.damfw.core.connection.DatabaseConnectionConfig;
+import com.example.damfw.core.connection.DatabaseConnectionAbstractFactory;
 
 public interface DatabaseConnectorStrategy {
-    DatabaseAction connect(ConnectionConfig configuration, ConnectionAbstractFactory sqlConnection) throws Exception;
+    DatabaseAction connect(DatabaseConnectionConfig configuration, DatabaseConnectionAbstractFactory sqlConnection) throws Exception;
 }

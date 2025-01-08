@@ -1,14 +1,14 @@
 package com.example.damfw.core.database;
 
-import com.example.damfw.core.connection.ConnectionAbstractFactory;
-import com.example.damfw.core.connection.ConnectionConfig;
+import com.example.damfw.core.connection.DatabaseConnectionAbstractFactory;
+import com.example.damfw.core.connection.DatabaseConnectionConfig;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class Neo4jDatabaseConnector implements DatabaseConnectorStrategy{
     @Override
-    public DatabaseAction connect(ConnectionConfig configuration, ConnectionAbstractFactory noSqlConnection) throws Exception {
+    public DatabaseAction connect(DatabaseConnectionConfig configuration, DatabaseConnectionAbstractFactory noSqlConnection) throws Exception {
 
         Connection connection = DriverManager.getConnection(
                 noSqlConnection.createConnectionString(configuration),

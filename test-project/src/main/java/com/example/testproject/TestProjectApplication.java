@@ -1,14 +1,14 @@
 package com.example.testproject;
 
-import com.example.damfw.core.connection.ConnectionConfig;
+import com.example.damfw.core.connection.DatabaseConnectionConfig;
 import com.example.damfw.core.connection.NoSqlConnectionFactory;
 import com.example.damfw.core.connection.SqlConnectionFactory;
 import com.example.damfw.core.database.MySQLDatabaseConnector;
 import com.example.damfw.core.database.Neo4jDatabaseConnector;
 import com.example.damfw.core.database.PostgresSQLDatabaseConnector;
-import com.example.damfw.core.management.DatabaseManager;
+import com.example.damfw.core.management.DatabaseOperationManager;
 import com.example.damfw.core.management.DatabaseManagerAbstractFactory;
-import com.example.damfw.core.management.Persistence;
+import com.example.damfw.core.management.ConnectionManager;
 import com.example.damfw.core.query.builder.QueryBuilder;
 import com.example.damfw.model.User;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,7 +31,7 @@ public class TestProjectApplication {
         Map<Object, Object> params = new HashMap<>();
         params.put("createDatabaseIfNotExist", "true");
 
-        ConnectionConfig configuration = ConnectionConfig.builder()
+        DatabaseConnectionConfig configuration = DatabaseConnectionConfig.builder()
                 .type("postgresql")
                 .hostname("localhost:5435")
                 .username("postgres")
@@ -41,11 +41,11 @@ public class TestProjectApplication {
                 .build();
 
         try {
-            Persistence.configureDatasource(configuration, new SqlConnectionFactory(), new PostgresSQLDatabaseConnector());
+            ConnectionManager.configureDatasource(configuration, new SqlConnectionFactory(), new PostgresSQLDatabaseConnector());
             System.out.println("Connected to PostgreSQL database");
 
-            DatabaseManagerAbstractFactory factory = Persistence.createRecordManagerFactory("simple-dao");
-            DatabaseManager databaseManager = factory.createRecordManager();
+            DatabaseManagerAbstractFactory factory = ConnectionManager.createRecordManagerFactory("simple-dao");
+            DatabaseOperationManager databaseManager = factory.createRecordManager();
 
             // Perform database operations
             QueryBuilder insertQuery = QueryBuilder.insert("user")
@@ -56,7 +56,7 @@ public class TestProjectApplication {
             List<User> users = databaseManager.executeQuery(QueryBuilder.select().from("user"), User.class);
             users.forEach(u -> System.out.println(u.getId() + " " + u.getName()));
 
-            Persistence.release("simple-dao");
+            ConnectionManager.release("simple-dao");
         } catch (Exception e) {
             System.err.println("Error with PostgreSQL: " + e.getMessage());
         }
@@ -66,7 +66,7 @@ public class TestProjectApplication {
         Map<Object, Object> params = new HashMap<>();
         params.put("createDatabaseIfNotExist", "true");
 
-        ConnectionConfig configuration = ConnectionConfig.builder()
+        DatabaseConnectionConfig configuration = DatabaseConnectionConfig.builder()
                 .type("mysql")
                 .hostname("localhost:3306")
                 .username("root")
@@ -76,11 +76,11 @@ public class TestProjectApplication {
                 .build();
 
         try {
-            Persistence.configureDatasource(configuration, new SqlConnectionFactory(), new MySQLDatabaseConnector());
+            ConnectionManager.configureDatasource(configuration, new SqlConnectionFactory(), new MySQLDatabaseConnector());
             System.out.println("Connected to MySQL database");
 
-            DatabaseManagerAbstractFactory factory = Persistence.createRecordManagerFactory("simple-dao");
-            DatabaseManager databaseManager = factory.createRecordManager();
+            DatabaseManagerAbstractFactory factory = ConnectionManager.createRecordManagerFactory("simple-dao");
+            DatabaseOperationManager databaseManager = factory.createRecordManager();
 
             // Perform database operations
             QueryBuilder insertQuery = QueryBuilder.insert("user")
@@ -91,7 +91,7 @@ public class TestProjectApplication {
             List<User> users = databaseManager.executeQuery(QueryBuilder.select().from("user"), User.class);
             users.forEach(u -> System.out.println(u.getId() + " " + u.getName()));
 
-            Persistence.release("simple-dao");
+            ConnectionManager.release("simple-dao");
         } catch (Exception e) {
             System.err.println("Error with MySQL: " + e.getMessage());
         }
@@ -101,7 +101,7 @@ public class TestProjectApplication {
         Map<Object, Object> params = new HashMap<>();
         params.put("enableSQLTranslation", "true");
 
-        ConnectionConfig configuration = ConnectionConfig.builder()
+        DatabaseConnectionConfig configuration = DatabaseConnectionConfig.builder()
                 .type("neo4j")
                 .hostname("localhost:7687")
                 .username("neo4j")
@@ -110,11 +110,11 @@ public class TestProjectApplication {
                 .build();
 
         try {
-            Persistence.configureDatasource(configuration, new NoSqlConnectionFactory(), new Neo4jDatabaseConnector());
+            ConnectionManager.configureDatasource(configuration, new NoSqlConnectionFactory(), new Neo4jDatabaseConnector());
             System.out.println("Connected to Neo4j database");
 
-            DatabaseManagerAbstractFactory factory = Persistence.createRecordManagerFactory("simple-dao");
-            DatabaseManager databaseManager = factory.createRecordManager();
+            DatabaseManagerAbstractFactory factory = ConnectionManager.createRecordManagerFactory("simple-dao");
+            DatabaseOperationManager databaseManager = factory.createRecordManager();
 
             // Perform database operations
             User user = new User(1, "Neo4jUser");
@@ -125,7 +125,7 @@ public class TestProjectApplication {
                 System.out.println(users.getInt("id"));
                 System.out.println(users.getString("name"));
             }
-            Persistence.release("simple-dao");
+            ConnectionManager.release("simple-dao");
         } catch (Exception e) {
             System.err.println("Error with Neo4j: " + e.getMessage());
         }

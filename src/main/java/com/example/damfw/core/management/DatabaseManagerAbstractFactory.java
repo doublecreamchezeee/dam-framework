@@ -17,7 +17,7 @@ public class DatabaseManagerAbstractFactory {
         this.databaseAction = databaseAction;
     }
 
-    public DatabaseManager createRecordManager() {
-        return new DatabaseManager(databaseAction);
+    public DatabaseOperationManager createRecordManager() {
+        return new DatabaseOperationManager(databaseAction);
     }
 }

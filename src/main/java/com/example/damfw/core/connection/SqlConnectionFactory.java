@@ -2,10 +2,10 @@ package com.example.damfw.core.connection;
 
 import java.util.stream.Collectors;
 
-public class SqlConnectionFactory extends ConnectionAbstractFactory {
+public class SqlConnectionFactory extends DatabaseConnectionAbstractFactory {
 
     @Override
-    public String createConnectionString(ConnectionConfig config) {
+    public String createConnectionString(DatabaseConnectionConfig config) {
         StringBuilder connectionUrl = new StringBuilder("jdbc:")
                 .append(config.getType())
                 .append("://")
