@@ -12,6 +12,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,8 +26,9 @@ import java.util.Objects;
 public class DatabaseOperationManager {
     DatabaseAction databaseAction;
     final List<Objects> records = new ArrayList<>();
+    private boolean autoCommit = true; // Default auto-commit mode
 
-    public QueryBuilder createQuery(QueryType type){
+    public QueryBuilder createQuery(QueryType type) {
         return createQuery(type, null);
     }
 
@@ -67,5 +69,58 @@ public class DatabaseOperationManager {
     public void delete(Object record) {
         QueryBuilder query = createQuery(QueryType.DELETE, record);
         executeUpdate(query);
+    }
+
+    // Transaction Management Methods
+    public void beginTransaction() {
+        try {
+            Connection connection = databaseAction.getConnection();
+            if (connection != null) {
+                setAutoCommit(false);
+                connection.setAutoCommit(false);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error starting transaction: " + e.getMessage(), e);
+        }
+    }
+
+    public void commitTransaction() {
+        try {
+            Connection connection = databaseAction.getConnection();
+            if (connection != null) {
+                connection.commit();
+                setAutoCommit(true); // Restore auto-commit mode
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error committing transaction: " + e.getMessage(), e);
+        }
+    }
+
+    public void rollbackTransaction() {
+        try {
+            Connection connection = databaseAction.getConnection();
+            if (connection != null) {
+                connection.rollback();
+                setAutoCommit(true); // Restore auto-commit mode
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error rolling back transaction: " + e.getMessage(), e);
+        }
+    }
+
+    public void setAutoCommit(boolean autoCommit) {
+        this.autoCommit = autoCommit;
+        try {
+            Connection connection = databaseAction.getConnection();
+            if (connection != null) {
+                connection.setAutoCommit(autoCommit);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error setting auto-commit mode: " + e.getMessage(), e);
+        }
+    }
+
+    public boolean isAutoCommitEnabled() {
+        return autoCommit;
     }
 }

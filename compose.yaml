@@ -8,7 +8,7 @@ services:
       - "7474:7474" # Web interface
       - "7687:7687" # Bolt protocol for database access
     environment:
-      - NEO4J_AUTH=neo4j/123456789 # Default username and password
+      - NEO4J_AUTH=neo4j/12345678 # Default username and password (matches code)
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes # Accept the license agreement
     volumes:
       - neo4j_data:/data  # Persistent data storage
@@ -16,8 +16,33 @@ services:
       - neo4j_import:/var/lib/neo4j/import # Import directory for CSV files
       - neo4j_plugins:/plugins # Plugin directory
 
+  postgres:
+    image: postgres:15 # Use the latest stable version of PostgreSQL
+    container_name: postgres-container
+    ports:
+      - "5435:5432" # Match the port in the code
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: database
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persistent data storage
+
+  mysql:
+    image: mysql:8.0 # Use the latest stable version of MySQL
+    container_name: mysql-container
+    ports:
+      - "3306:3306" # Match the port in the code
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: designPattern
+    volumes:
+      - mysql_data:/var/lib/mysql # Persistent data storage
+
 volumes:
   neo4j_data:
   neo4j_logs:
   neo4j_import:
   neo4j_plugins:
+  postgres_data:
+  mysql_data:

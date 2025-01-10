@@ -18,6 +18,6 @@ public class DatabaseManagerAbstractFactory {
     }
 
     public DatabaseOperationManager createRecordManager() {
-        return new DatabaseOperationManager(databaseAction);
+        return new DatabaseOperationManager(databaseAction, true);
     }
 }
